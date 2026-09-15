@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 首屏前先定好 <html lang> 與 dir：module script 是延遲執行的，
+       等到它跑起來才切 dir，阿拉伯語／烏爾都語使用者會先看到一幀 LTR 版面才翻正。 -->
+  <script>
+    (function () {
+      var RTL = { ar: 1, ur: 1 };
+      try {
+        var l = localStorage.getItem("web6.lang");
+        if (!l) return;
+        document.documentElement.lang = l;
+        if (RTL[l]) document.documentElement.dir = "rtl";
+      } catch (e) { /* 私密模式下 localStorage 不可用，保持預設 */ }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>WEB6 区块链浏览器 · 交易</title>
+  <meta name="description" content="WEB6 联盟链交易列表与交易详情" />
+  <!-- 社群分享卡：連結在 IM / 社群被轉發時顯示正確標題與摘要 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="WEB6 Explorer" />
+  <meta property="og:title" content="WEB6 区块链浏览器 · 交易" />
+  <meta property="og:description" content="WEB6 联盟链交易列表与交易详情" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="WEB6 区块链浏览器 · 交易" />
+  <meta name="twitter:description" content="WEB6 联盟链交易列表与交易详情" />
+  <!-- 全站資料都來自此 RPC 節點，預先建連可省掉一次 DNS + TLS 握手 -->
+  <link rel="preconnect" href="https://chain.web6.win" crossorigin />
+  <link rel="dns-prefetch" href="https://chain.web6.win" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232f6df6'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='sans-serif'>&#9672;</text></svg>" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <!-- 鍵盤 / 螢幕閱讀器：第一個可聚焦元素，可直接跳過頂欄 -->
+  <a class="skip-link" href="#view" data-i18n="a11y.skip">跳到主要内容</a>
+  <header class="topbar" id="topbar"></header>
+
+  <main id="view" class="view" tabindex="-1"></main>
+
+  <footer class="footer" id="footer"></footer>
+
+  <nav class="tabbar" id="tabbar"></nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { setupChrome } from "./assets/js/chrome.js";
+    import { viewTxs, viewTx, parseHash, clearTimer } from "./assets/js/views.js";
+    function go() {
+      clearTimer();
+      const { name, parts, query } = parseHash();
+      if (name === "tx" && parts[1]) viewTx(parts[1]);
+      else viewTxs(query);
+    }
+    setupChrome("txs", go);
+    window.addEventListener("hashchange", go);
+  </script>
+  <noscript>
+    <p class="noscript">WEB6 區塊鏈瀏覽器需要 JavaScript 才能載入鏈上資料，請開啟 JavaScript 後重新整理。</p>
+  </noscript>
+</body>
+</html>
