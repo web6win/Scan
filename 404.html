@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <!-- 404 不進索引，也不該被 robots 當成正常頁面收錄 -->
+  <meta name="robots" content="noindex, follow" />
+  <title>正在跳转 · WEB6 区块链浏览器</title>
+  <meta name="description" content="WEB6 区块链浏览器 · 正在跳转" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232f6df6'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='sans-serif'>&#9672;</text></svg>" />
+
+  <!-- GitHub Pages 會把所有「未命中靜態檔案」的請求交給 404.html，
+       所以它必須能在任意路徑深度下工作：不引用任何相對網址的資源，
+       樣式全部內嵌（否則在 /tx/0x… 這種深路徑下會解析成 /tx/assets/…）。 -->
+  <style>
+    /* 只複製 styles.css 裡用得到的 token；改主樣式時記得同步這一小段。 */
+    :root {
+      --bg: #f3f5fa; --surface: #ffffff; --text: #0d1526; --muted: #5f6c85;
+      --border: #e4e9f2; --accent: #2f6df6; --accent-ink: #1c4fd0; --accent-soft: #e9f0ff;
+      --shadow: 0 1px 2px rgba(13, 21, 38, .05), 0 8px 24px -8px rgba(13, 21, 38, .10);
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #070b16; --surface: #101828; --text: #e9eefa; --muted: #94a3bf;
+        --border: #1d2740; --accent: #6f9bff; --accent-ink: #a9c2ff; --accent-soft: #16233f;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 10px 30px -10px rgba(0, 0, 0, .55);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.6 system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .nf-card {
+      width: 100%; max-width: 480px;
+      padding: 32px 28px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    /* 大顆的「404」用品牌漸層，跟首頁 Hero 同一組色，遠看就知道是本站 */
+    .nf-code {
+      margin: 0 0 10px;
+      font-size: 56px; font-weight: 800; line-height: 1; letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--accent) 0%, #7a5cff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .nf-card h1 { margin: 0 0 4px; font-size: 19px; }
+    .nf-sub { margin: 0; color: var(--muted); font-size: 13px; }
+    /* 把使用者請求到的路徑顯示出來：貼錯雜湊時一眼能看出差在哪 */
+    .nf-path {
+      margin: 16px 0 0; padding: 9px 12px;
+      border: 1px dashed var(--border); border-radius: 9px;
+      background: var(--accent-soft); color: var(--accent-ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px; word-break: break-all;
+    }
+    .nf-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
+    /* 最小點擊區 44px：跟站上 --tap 一致，行動裝置不要出現很難按的細按鈕 */
+    .nf-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 0 18px;
+      border: 1px solid var(--border); border-radius: 999px;
+      background: var(--surface); color: var(--text);
+      font-size: 14px; font-weight: 600; text-decoration: none;
+    }
+    .nf-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+    .nf-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .nf-btn.primary:hover { color: #fff; filter: brightness(1.06); }
+    .nf-hint { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+    .nf-hint a { color: var(--accent-ink); font-weight: 600; }
+    @media (prefers-reduced-motion: no-preference) {
+      .nf-card { animation: nf-in .28s cubic-bezier(.32, .72, 0, 1) both; }
+      @keyframes nf-in { from { opacity: 0; transform: translateY(8px); } }
+    }
+  </style>
+
+  <script>
+    /* 路徑還原的核心，刻意寫成純函式：不吃 document，方便直接用 Node 跑單元測試。
+       對照表就是站內 hash 路由（txs.html / blocks.html / address.html 各自的 parseHash）。 */
+    (function () {
+      "use strict";
+
+      var ROUTES = {
+        tx:      { page: "txs.html",     re: /^(?:0x)?[0-9a-f]{64}$/i, hex: 1 },
+        block:   { page: "blocks.html",  re: /^[0-9]{1,20}$/ },
+        address: { page: "address.html", re: /^(?:0x)?[0-9a-f]{40}$/i, hex: 1 }
+      };
+
+      // 站點根目錄：自訂網域（scan.web6.win）就在根；*.github.io 專案站第一段是 repo 名。
+      function web6Base(pathname, hostname) {
+        if (/\.github\.io$/i.test(hostname)) {
+          var seg = String(pathname).split("/").filter(Boolean)[0];
+          return seg ? "/" + seg + "/" : "/";
+        }
+        return "/";
+      }
+
+      // /tx/<hash> → /txs.html#/tx/<hash>；回傳 null 代表沒有對上（走真的 404 卡片）。
+      function web6Resolve404(pathname, search, hostname) {
+        var base = web6Base(pathname, hostname);
+        var path = base === "/" ? String(pathname) : String(pathname).slice(base.length - 1);
+        var seg = path.split("/").filter(Boolean);
+        if (seg.length !== 2) return null;
+
+        var key = seg[0].toLowerCase();
+        var route = ROUTES[key];
+        if (!route) return null;
+
+        var id;
+        try { id = decodeURIComponent(seg[1]); } catch (e) { return null; }
+        if (!route.re.test(id)) return null;
+        if (route.hex && !/^0x/i.test(id)) id = "0x" + id;   // 少了 0x 也認，補回去
+
+        return base + route.page + "#/" + key + "/" + encodeURIComponent(id) + (search || "");
+      }
+
+      window.web6Base = web6Base;
+      window.web6Resolve404 = web6Resolve404;
+
+      window.__WEB6_TARGET = web6Resolve404(location.pathname, location.search, location.hostname);
+      // 用 replace 而不是 href：不想在瀏覽紀錄裡留下這條其实不存在的 /tx/… 網址，
+      // 否則使用者按上一頁會繞回 404 再跳一次。
+      if (window.__WEB6_TARGET) location.replace(window.__WEB6_TARGET);
+    })();
+  </script>
+</head>
+<body>
+  <main class="nf-card">
+    <p class="nf-code" aria-hidden="true">404</p>
+    <h1>找不到这个页面</h1>
+    <p class="nf-sub">Page not found</p>
+
+    <p class="nf-path" id="nf-path" hidden></p>
+
+    <div class="nf-actions">
+      <a class="nf-btn primary" data-base-href="" href="/">返回首页</a>
+      <a class="nf-btn" data-base-href="blocks.html" href="/blocks.html">浏览区块</a>
+      <a class="nf-btn" data-base-href="txs.html" href="/txs.html">浏览交易</a>
+    </div>
+
+    <p class="nf-hint" id="nf-hint" hidden>如果浏览器没有自动跳转，请<a id="nf-jump" href="#">点击这里继续</a>。</p>
+  </main>
+
+  <script>
+    /* 結尾這段只處理兩種「跳不走」的情況：
+       1. head 已命中路由，但某些環境擋住了 location.replace（或瀏覽器太慢）→ 1.2s 後補手動連結；
+       2. 完全沒命中 → 把請求路徑印出來、把導覽連結對準站點根目錄。 */
+    (function () {
+      "use strict";
+      var base = window.web6Base(location.pathname, location.hostname);
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-base-href]"), function (a) {
+        a.setAttribute("href", base + a.getAttribute("data-base-href"));
+      });
+
+      var hint = document.getElementById("nf-hint");
+      var jump = document.getElementById("nf-jump");
+
+      if (window.__WEB6_TARGET) {
+        jump.setAttribute("href", window.__WEB6_TARGET);
+        setTimeout(function () { hint.hidden = false; }, 1200);
+        return;
+      }
+
+      document.title = "页面不存在 · WEB6 区块链浏览器";
+      var p = document.getElementById("nf-path");
+      try { p.textContent = decodeURIComponent(location.pathname) + (location.search || ""); }
+      catch (e) { p.textContent = location.pathname + (location.search || ""); }
+      p.hidden = false;
+    })();
+  </script>
+</body>
+</html>

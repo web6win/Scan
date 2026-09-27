@@ -1,0 +1,16 @@
+# 本機工作記憶：含內網 IP、資料庫帳密等維運資訊，屬於本地記錄，不進版控
+.workbuddy/
+
+# 建置 / 暫存產物
+out/
+*.log
+
+# solc 的 wasm（soljson-*.js 一顆 ~9MB）：可選自託管（內網／離線用），
+# 不放進版控，沒有它時部署頁會自動改從 jsdelivr CDN 載入。
+assets/vendor/solc/
+
+# 編輯器與系統檔
+.vs/
+.idea/
+.DS_Store
+Thumbs.db
