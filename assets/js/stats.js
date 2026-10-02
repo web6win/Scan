@@ -1,8 +1,8 @@
-// ===== 網路統計：ETH 總量 + 唯一地址數（用戶數）=====
+// ===== 網路統計：原生幣（CNT）總量 + 唯一地址數（用戶數）=====
 // 純前端無索引器，作法：分批掃描鏈上區塊，收集 miner / 交易 from,to / 合約建立地址，
-// 對這些唯一地址的「當前餘額」求和即為 ETH 總量。
+// 對這些唯一地址的「當前餘額」求和即為原生幣總量。
 //
-// 為什麼「求和當前餘額」是正確的：鏈上轉帳只是把 ETH 在地址間搬動，全體地址餘額總和不變
+// 為什麼「求和當前餘額」是正確的：鏈上轉帳只是把原生幣在地址間搬動，全體地址餘額總和不變
 // （守恒）。所以只要對「目前已知的所有地址」取一次當前餘額求和，得到的就是總量；
 // 只有新增地址（或鑄造／銷毀，本聯盟鏈通常沒有）才會改變總量，因此我們在「地址集合有變化時」
 // 重新求和即可，平常不重抓。
@@ -12,7 +12,7 @@
 // 結果依 chainId 快取在 localStorage，支援斷點續掃與「只掃新區塊」的增量更新：
 // 第一次跑會掃完全部區塊（一次性的重活，之後快取），之後每次只補掃新長出來的區塊。
 import { batch, rpc } from "./api.js";
-import { chainIdNum } from "./config.js";
+import { chainIdNum, CHAIN } from "./config.js";
 import { hexToNum } from "./utils.js";
 
 const PAGE = 300;                  // 每個批次請求掃描的區塊數
@@ -156,14 +156,17 @@ export async function scanStats({ onProgress, force = false } = {}) {
   }
 }
 
-// wei（十進位字串）→ 人類可讀 ETH，附千分位與原生符號
-export function formatEther(weiStr, symbol = "ETH") {
+// wei（十進位字串）→ 人類可讀原生幣，附千分位與原生符號。
+// 位數與預設符號都取自 CHAIN（單一事實來源），鏈換幣成 CNT 後不必再來改這裡。
+export function formatEther(weiStr, symbol = CHAIN.nativeSymbol) {
+  const decimals = BigInt(CHAIN.nativeDecimals);
+  const unit = 10n ** decimals;
   const wei = BigInt(weiStr || "0");
   if (wei === 0n) return `0 ${symbol}`;
-  const intPart = wei / 10n ** 18n;
-  const frac = wei % 10n ** 18n;
+  const intPart = wei / unit;
+  const frac = wei % unit;
   const intStr = intPart.toLocaleString("en-US");
   if (frac === 0n) return `${intStr} ${symbol}`;
-  const f = frac.toString().padStart(18, "0").slice(0, 4).replace(/0+$/, "");
+  const f = frac.toString().padStart(Number(decimals), "0").slice(0, 4).replace(/0+$/, "");
   return `${intStr}.${f} ${symbol}`;
 }

@@ -17,7 +17,7 @@ const API = "http://127.0.0.1:5099";
 const KEY = process.env.VERIFY_ADMIN_KEY || "";
 const RPC = "https://chain.web6.win";
 const ZERO = "0x0000000000000000000000000000000000000000";
-const TOL = 10n ** 19n; // 10 ETH 容差：容納活鏈漂移（掃描期間驗證人獎勵累積），但遠小於單一遺漏地址（~1582 ETH），足以抓 gross 錯誤
+const TOL = 10n ** 19n; // 10 CNT 容差：容納活鏈漂移（掃描期間驗證人獎勵累積），但遠小於單一遺漏地址（~1582 CNT），足以抓 gross 錯誤
 
 let pass = 0, fail = 0;
 const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); c ? pass++ : fail++; };

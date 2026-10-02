@@ -27,8 +27,8 @@ export function fmtWei(weiHex, opts = {}) {
   const wei = hexToBigInt(weiHex);
   const sym = opts.symbol ?? NATIVE_TOKEN;
   if (wei === 0n) return `0 ${sym}`;
-  // 以太
-  const ether = Number(wei) / 1e18;
+  // 主單位（原生幣 CNT）；小數位數取自 CHAIN.nativeDecimals
+  const ether = Number(wei) / 10 ** CHAIN.nativeDecimals;
   if (ether >= 0.000001) {
     const v = ether.toLocaleString("en-US", { maximumFractionDigits: 6 });
     return `${v} ${sym}`;

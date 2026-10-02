@@ -139,7 +139,7 @@ export async function fetchContracts(page = 1, size = 25) {
 }
 
 // ---------- 鏈上統計（公開讀取）----------
-// 後端把鏈上 ETH 總量 / 銷毀量 / 地址數掃描並持久化在 PostgreSQL；
+// 後端把鏈上原生幣（CNT）總量 / 銷毀量 / 地址數掃描並持久化在 PostgreSQL；
 // 首頁「網路統計」面板優先採用這份後端資料（支援斷點續掃、自動增量）。
 // 任何失敗（未設定 / 逾時 / 非 2xx）都回傳 null，呼叫端靜默降級成本機掃描。
 export async function fetchStats() {

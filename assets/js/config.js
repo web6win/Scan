@@ -14,9 +14,10 @@ export const CHAIN = {
   consensus: "QBFT",
   // 客戶端家族不對外展示：Hero 只顯示 Chain ID。
   // （若要重新顯示，需加回 web3_clientVersion 的 RPC 呼叫與對應 i18n 佔位符。）
-  // 原生代幣：顯示與錢包註冊共用。若你們的代幣符號不是 ETH，改這兩行即可。
-  nativeName: "Ether",
-  nativeSymbol: "ETH",
+  // 原生代幣：顯示與錢包註冊共用。幣種變更時改這三行即可
+  // （fmtWei / 統計面板 / 錢包 addChain 全部由此推导，無需個別修改）。
+  nativeName: "Contribution",
+  nativeSymbol: "CNT",
   nativeDecimals: 18,
   rpcUrl: "https://chain.web6.win/",
   explorerName: "WEB6 Explorer",

@@ -56,14 +56,14 @@ out.panel = panel;
 const api = await fetch(API + "/api/stats?chainId=2520").then((r) => r.json());
 
 ok(panel.vals.length === 3, `網路統計有 3 張卡片 (got ${panel.vals.length})`);
-ok(panel.vals[0] && panel.vals[0] !== "—", `ETH 總量已填值 (${panel.vals[0]})`);
+ok(panel.vals[0] && panel.vals[0] !== "—", `CNT 總量已填值 (${panel.vals[0]})`);
 ok(panel.vals[1] && panel.vals[1] !== "—", `銷毀量已填值 (${panel.vals[1]})`);
 ok(panel.vals[2] && panel.vals[2] !== "—", `地址數已填值 (${panel.vals[2]})`);
 ok(/后端|backend/i.test(panel.src || ""), `資料來源標為後端 (${panel.src})`);
 
 // 數值應與後端一致（總量/銷毀/地址數）
-const supplyEth = (BigInt(api.totalSupplyWei) / 10n ** 18n).toString();
-ok(panel.vals[0].replace(/[,\s]/g, "").startsWith(supplyEth.slice(0, Math.min(supplyEth.length, 6))), `總量顯示與後端一致（前端 ${panel.vals[0]} vs 後端 ${supplyEth} ETH）`);
+const supplyEth = (BigInt(api.totalSupplyWei) / 10n ** 18n).toString(); // 精度 18（CHAIN.nativeDecimals）
+ok(panel.vals[0].replace(/[,\s]/g, "").startsWith(supplyEth.slice(0, Math.min(supplyEth.length, 6))), `總量顯示與後端一致（前端 ${panel.vals[0]} vs 後端 ${supplyEth} CNT）`);
 ok(panel.vals[2].replace(/[,\s]/g, "") === String(api.addressCount), `地址數顯示與後端一致 (${panel.vals[2]} vs ${api.addressCount})`);
 
 // 切英文再確認來源標籤

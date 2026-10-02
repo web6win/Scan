@@ -57,7 +57,7 @@ function statCardRef(label, value, sub, accent, icon) {
   return { card, value: valueEl };
 }
 
-// 數值含單位（如「103.3 ETH」）時，把單位拆成小號淺色字（.stat-unit），版面更精緻
+// 數值含單位（如「103.3 CNT」）時，把單位拆成小號淺色字（.stat-unit），版面更精緻
 function setStatValue(valueEl, text) {
   const s = String(text ?? "");
   const suffix = " " + CHAIN.nativeSymbol;
@@ -344,7 +344,7 @@ export async function viewHome() {
   const heroEl = hero(null, () => render().catch((e) => console.error(t("home.refreshFailed"), e)));
   const gridEl = el("div", { class: "stat-grid" });
 
-  // 網路統計面板：ETH 總量 + 銷毀量 + 地址數（用戶數）；優先採用後端持久化資料，
+  // 網路統計面板：原生幣（CNT）總量 + 銷毀量 + 地址數（用戶數）；優先採用後端持久化資料，
   // 後端未設定時回退本機掃描。掃描進度會隨背景掃描即時更新。
   const supplyRef = statCardRef(t("home.totalSupply"), "—", t("home.totalSupplySub"), "blue", "Ξ");
   const burnedRef = statCardRef(t("home.burned"), "—", t("home.burnedSub"), "red", "🔥");
@@ -432,7 +432,7 @@ export async function viewHome() {
     if (!_homeData) setPanelBody(blkSec, errorBox(e.message || String(e)));
   }
 
-  // ---------- 網路統計（ETH 總量 / 銷毀量 / 地址數）----------
+  // ---------- 網路統計（CNT 總量 / 銷毀量 / 地址數）----------
   // 後端優先：設定了驗證後端就讀 /api/stats（總量/銷毀/地址數 + 續掃進度），
   // 後端未設定或暫時取不到則靜默回退本機掃描（純前端）。
   // 進度區統一渲染：掃描中→進度條+百分比；完成→✓ 與最後更新時間（只改文字與 class）。

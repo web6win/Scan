@@ -1,4 +1,4 @@
-// 網路統計端到端測試：ETH 總量 + 地址數（用戶數）
+// 網路統計端到端測試：原生幣（CNT）總量 + 地址數（用戶數）
 // 作法：把 localStorage 的掃描游標預設到「最新高度往前 100 塊」，這樣只會補掃約 100 塊
 // （避免把整條 7 萬多塊的鏈全部爬一遍），用來驗證：掃描能跑、地址能被收集、
 // 餘額求和 > 0、卡片有數字、掃描進度會走到「已完成」、且無腳本錯誤。
@@ -89,7 +89,7 @@ ok(data.vals.length === 2, `面板內有 2 張統計卡片（實際 ${data.vals.
 
 const supply = data.vals[0] || "";
 const accounts = data.vals[1] || "";
-ok(/ETH/.test(supply) && supply !== "—", `ETH 總量顯示：${supply}`);
+ok(/CNT/.test(supply) && supply !== "—", `CNT 總量顯示：${supply}`);
 ok(/^\d[\d,]*$/.test(accounts), `地址數顯示為數字：${accounts}`);
 const accNum = parseInt((accounts || "0").replace(/,/g, ""), 10);
 ok(accNum >= 1, `地址數 >= 1（實際 ${accNum}）`);
