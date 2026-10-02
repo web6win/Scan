@@ -21,6 +21,10 @@ export const CHAIN = {
   nativeDecimals: 18,
   rpcUrl: "https://chain.web6.win/",
   explorerName: "WEB6 Explorer",
+  // 網絡頭像（EIP-3085 的 iconUrls，注意這是「網絡」圖標，不是原生幣 CNT 的 logo）。
+  // 必須是 https 且指向有效圖片，否則嚴格按規範實現的錢包會直接拒絕「加鏈」請求；
+  // 若圖掛了，把這裡清空即可（params 會不再帶 iconUrls，加鏈不受影響）。
+  iconUrl: "https://scan.web6.win/web6-network.png",
   // 验证人治理合约地址（见 contracts/ValidatorGovernance.sol）。
   // 创世预部署于固定地址 0x...01000000，并在 genesis 的
   // qbft.validatorcontractaddress 指向它，以启用 QBFT 合约治理模式。
@@ -99,5 +103,7 @@ export function addChainParams() {  const params = {
   };
   const ex = explorerUrl();
   if (ex) params.blockExplorerUrls = [ex];
+  // EIP-3085 頂層 iconUrls（網絡頭像）；空字串則不傳，避免無效圖導致加鏈被拒
+  if (CHAIN.iconUrl) params.iconUrls = [CHAIN.iconUrl];
   return params;
 }

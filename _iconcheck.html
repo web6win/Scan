@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图标透明底自查 · WEB6</title>
+<style>
+  body { margin: 0; font: 14px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; background: #fafafa; color: #111; }
+  h1 { font-size: 18px; margin: 0; padding: 22px 20px 6px; }
+  .note { margin: 0; padding: 0 20px 6px; color: #555; max-width: 760px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; }
+  figure { margin: 0; text-align: center; }
+  .box { width: 220px; height: 220px; display: grid; place-items: center; border-radius: 12px; box-shadow: 0 1px 5px rgba(0,0,0,.18); }
+  .box img { width: 180px; height: 180px; display: block; }
+  .bg-black { background: #0b0b0b; }
+  .bg-white { background: #ffffff; }
+  .bg-brand { background: #2f6df6; }
+  figcaption { margin-top: 8px; color: #444; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>透明底自查：同一张 web6-network.png 放在三种底色上</h1>
+<p class="note">
+  若左侧「深色底」格里图形四周呈黑色、看不到方块边界，说明 PNG 自身是透明的。
+  在浏览器里直接打开该 PNG 看到的浅灰方块，是浏览器图片查看器给透明图垫的底色，与文件无关。
+  本页仅供自查，可随时删除。
+</p>
+<div class="grid">
+  <figure>
+    <div class="box bg-black"><img src="web6-network.png" alt="web6-network.png 在深色底上"></div>
+    <figcaption>深色底（透明处应显示为黑）</figcaption>
+  </figure>
+  <figure>
+    <div class="box bg-white"><img src="web6-network.png" alt="web6-network.png 在白色底上"></div>
+    <figcaption>白色底</figcaption>
+  </figure>
+  <figure>
+    <div class="box bg-brand"><img src="web6-network.png" alt="web6-network.png 在品牌蓝底上"></div>
+    <figcaption>品牌蓝 #2f6df6</figcaption>
+  </figure>
+</div>
+</body>
+</html>

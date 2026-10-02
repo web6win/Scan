@@ -89,6 +89,8 @@ export function openNetworkModal() {
   ];
   const ex = explorerUrl();
   if (ex) rows.push(["wallet.explorer", ex]);
+  // 钱包網絡頭像（iconUrls 指向的圖）：列出 URL 供運營肉眼核對 / 一鍵複製
+  if (CHAIN.iconUrl) rows.push(["wallet.iconUrl", CHAIN.iconUrl, { wrap: true }]);
 
   // 可分享的「一鍵加鏈」連結：運營把它貼到公告 / IM，對方點開即彈出加鏈彈窗。
   // 放在同一份可複製清單裡，於是「複製全部參數」也自然帶上它。
