@@ -26,11 +26,11 @@ export const CHAIN = {
   // 若圖掛了，把這裡清空即可（params 會不再帶 iconUrls，加鏈不受影響）。
   iconUrl: "https://scan.web6.win/web6-network.png",
   // 验证人治理合约地址（见 contracts/ValidatorGovernance.sol）。
-  // 创世预部署于固定地址 0x...01000000，并在 genesis 的
+  // 创世预部署于固定地址 0x...1000，并在 genesis 的
   // qbft.validatorcontractaddress 指向它，以启用 QBFT 合约治理模式。
   // Besu 每个区块调用 getValidators() 取得验证人集合。
   // 也可用 ?addr=0x... 临时覆盖（便于未写死地址的部署）。
-  validatorGovernance: "0x0000000000000000000000000000000001000000",
+  validatorGovernance: "0x0000000000000000000000000000000000001000",
   // 首頁「通证」欄位展示的代幣合約。
   // 現在這份清單是**加分項而非唯一來源**：tokens.html 還會自動掃後端（VerifyApi）的合約目錄，
   // 對每個已部署合約做 ERC-165 標準識別，符合 ERC-20 / 721 / 1155 的就自動進榜 ——

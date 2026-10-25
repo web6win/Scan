@@ -2,7 +2,7 @@
 // 读取走 eth_call（API.callContract），写入走钱包签名（eth_sendTransaction）。
 // 合约地址来自 config.js 的 CHAIN.validatorGovernance；未配置时页面提示「尚未部署」。
 //
-// 治理模型（合约 0x...01000000，创世预部署、无构造函数，初始验证人由 genesis storage 注入）：
+// 治理模型（合约 0x...1000，创世预部署、无构造函数，初始验证人由 genesis storage 注入）：
 //   1. 任意验证人可 proposeAddValidator(v) / proposeRemoveValidator(v)（提议者自动计 1 票）。
 //   2. 其它验证人调用 approve(id) 追加赞成票。
 //   3. 赞成票 >= ceil(验证人数 × 3/4) 时提案自动执行（新增 / 移除）。
